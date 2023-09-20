@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\Sluggify;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,10 +25,12 @@ class ProductController extends AbstractController
     }
 
     #[Route('/products/{id}')]
-    public function viewProduct($id): Response {
+    public function viewProduct(int $id, Sluggify $slugger): Response {
+        $slug = $slugger->generate('éééé$^ù`$^^`ù`ù$€€ôôÙù`ù');
         return $this->render('product/product.html.twig', [
             'controller_name' => 'ProductController',
-            'id' => $id
+            'id' => $id,
+            'slug' => $slug
         ]);
     }
 }
