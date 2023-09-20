@@ -12,12 +12,8 @@ class DemoController extends AbstractController
     #[Route('/demo', name: 'app_demo')]
     public function index(): Response
     {
-        $date = new \DateTime();
-        $formattedDate = $date->format('Y-m-d H:i:s');
-
         return $this->render('demo/index.html.twig', [
             'controller_name' => 'DemoController',
-            'date' => $formattedDate,
         ]);
     }
 }
