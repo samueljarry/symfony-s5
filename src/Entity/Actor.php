@@ -33,9 +33,13 @@ class Actor
     #[Groups(['actor:read'])]
     private Collection $movies;
 
+    #[ORM\ManyToMany(targetEntity: Nationality::class, mappedBy: 'actors')]
+    private Collection $nationalities;
+
     public function __construct()
     {
         $this->movies = new ArrayCollection();
+        $this->nationalities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -89,6 +93,33 @@ class Actor
     {
         if ($this->movies->removeElement($movie)) {
             $movie->removeActor($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Nationality>
+     */
+    public function getNationalities(): Collection
+    {
+        return $this->nationalities;
+    }
+
+    public function addNationality(Nationality $nationality): static
+    {
+        if (!$this->nationalities->contains($nationality)) {
+            $this->nationalities->add($nationality);
+            $nationality->addActor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNationality(Nationality $nationality): static
+    {
+        if ($this->nationalities->removeElement($nationality)) {
+            $nationality->removeActor($this);
         }
 
         return $this;
