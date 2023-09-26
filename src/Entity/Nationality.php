@@ -27,7 +27,7 @@ class Nationality
     #[Groups(['nationality:read', 'movie:read'])]
     private ?string $name = null;
 
-    #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'nationalities')]
+    #[ORM\OneToMany(targetEntity: Actor::class, mappedBy: 'nationality')]
     #[Groups(['nationality:read'])]
     private Collection $actors;
 
