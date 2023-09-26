@@ -26,7 +26,7 @@ class ProductController extends AbstractController
 
     #[Route('/products/{id}')]
     public function viewProduct(int $id, Sluggify $slugger): Response {
-        $slug = $slugger->generate('éééé$^ù`$^^`ù`ù$€€ôôÙù`ù');
+        $slug = $slugger->generate('ééééé');
         return $this->render('product/product.html.twig', [
             'controller_name' => 'ProductController',
             'id' => $id,
