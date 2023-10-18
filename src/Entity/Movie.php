@@ -51,6 +51,10 @@ class Movie
     #[Groups(['movie:read', 'actor:read'])]
     private ?int $duration = null;
 
+    #[ORM\Column(nullable: true)]
+    #[Groups(['movie:read', 'actor:read'])]
+    private ?bool $online = null;
+
     public function __construct()
     {
         $this->actor = new ArrayCollection();
@@ -141,6 +145,18 @@ class Movie
     public function setDuration(int $duration): static
     {
         $this->duration = $duration;
+
+        return $this;
+    }
+
+    public function isOnline(): ?bool
+    {
+        return $this->online;
+    }
+
+    public function setOnline(?bool $online): static
+    {
+        $this->online = $online;
 
         return $this;
     }
