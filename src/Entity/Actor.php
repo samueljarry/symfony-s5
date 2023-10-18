@@ -2,12 +2,15 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ActorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ActorRepository::class)]
 #[ApiResource(
@@ -18,11 +21,13 @@ class Actor
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['actor:read'])]
+    #[Groups(['actor:read', 'movie:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 70)]
     #[Groups(['movie:read', 'actor:read'])]
+    #[Assert\NotBlank(message: 'Vous devez spécifier un prénom.')]
+    #[ApiFilter(SearchFilter::class, strategy:'partial')]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 70)]
@@ -33,13 +38,13 @@ class Actor
     #[Groups(['actor:read'])]
     private Collection $movies;
 
-    #[ORM\ManyToMany(targetEntity: Nationality::class, mappedBy: 'actors')]
-    private Collection $nationalities;
+    #[ORM\ManyToOne(targetEntity: Nationality::class, inversedBy: 'actors')]
+    #[Groups(['actor:read'])]
+    private ?Nationality $nationality = null;
 
     public function __construct()
     {
         $this->movies = new ArrayCollection();
-        $this->nationalities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -98,29 +103,14 @@ class Actor
         return $this;
     }
 
-    /**
-     * @return Collection<int, Nationality>
-     */
-    public function getNationalities(): Collection
+    public function getNationality(): ?Nationality
     {
-        return $this->nationalities;
+        return $this->nationality;
     }
 
-    public function addNationality(Nationality $nationality): static
+    public function setNationality(?Nationality $nationality): static
     {
-        if (!$this->nationalities->contains($nationality)) {
-            $this->nationalities->add($nationality);
-            $nationality->addActor($this);
-        }
-
-        return $this;
-    }
-
-    public function removeNationality(Nationality $nationality): static
-    {
-        if ($this->nationalities->removeElement($nationality)) {
-            $nationality->removeActor($this);
-        }
+        $this->nationality = $nationality;
 
         return $this;
     }

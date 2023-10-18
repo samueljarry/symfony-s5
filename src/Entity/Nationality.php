@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\NationalityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,7 +15,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'groups' => ['nationality:read']
     ]
 )]
-
 class Nationality
 {
     #[ORM\Id]
@@ -24,10 +24,10 @@ class Nationality
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['nationality:read', 'movie:read'])]
+    #[Groups(['nationality:read', 'actor:read'])]
     private ?string $name = null;
 
-    #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'nationalities')]
+    #[ORM\OneToMany(targetEntity: Actor::class, mappedBy: 'nationality')]
     #[Groups(['nationality:read'])]
     private Collection $actors;
 

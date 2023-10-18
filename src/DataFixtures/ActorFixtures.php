@@ -12,8 +12,6 @@ class ActorFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
 
-        // Génere les données pour 10 acteurs avec un firstName et un lastName réaliste
-
         $firstNames = ['Jean', 'Pierre', 'Paul', 'Jacques', 'Marie', 'Julie', 'Julien', 'Jeanne', 'Pierre', 'Pauline'];
         $lastNames = ['Dupont', 'Durand', 'Duchemin', 'Duchesse', 'Duc', 'Ducroc', 'Ducrocq', 'Ducroq', 'Ducroque', 'Ducroquefort'];
 
@@ -25,20 +23,20 @@ class ActorFixtures extends Fixture implements DependentFixtureInterface
             $actor->setLastName($lastNames[rand(0, 9)]);
 
             // Add Nationality
-            $nationality = $this->getReference('nationality_' . rand(1, 5)); // Aussi, utilisez rand(1, 5), pas rand(1, 10)
+            $nationality = $this->getReference('nationality_' . $i);
             if (!in_array($nationality, $nationalities)) {
-                $nationalities[] = $nationality; // Ajoutez à $nationalities, pas à $nationality
-                $actor->addNationality($nationality);
+                $nationalities[] = $nationality;
+                $actor->setNationality($nationality);
             }
 
             $manager->persist($actor);
-            $this->addReference('actor_' . $i, $actor); // "expose" l'objet à l'extérieur de la classe pour les liaisons avec Movie
+            $this->addReference('actor_' . $i, $actor);
         }
 
         $manager->flush();
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             NationalityFixtures::class
