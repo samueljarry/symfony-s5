@@ -25,13 +25,13 @@ class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/products/{id}')]
-    public function viewProduct(int $id, Sluggify $slugger): Response
+    #[Route('/products/{productId}')]
+    public function viewProduct(int $productId, Sluggify $slugger): Response
     {
         $slug = $slugger->generate('ééééé');
         return $this->render('product/product.html.twig', [
             'controller_name' => 'ProductController',
-            'id' => $id,
+            'id' => $productId,
             'slug' => $slug
         ]);
     }

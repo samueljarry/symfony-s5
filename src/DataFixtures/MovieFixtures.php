@@ -6,7 +6,6 @@ use App\Entity\Movie;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use App\DataFixtures\ActorFixtures;
 
 class MovieFixtures extends Fixture implements DependentFixtureInterface
 {
