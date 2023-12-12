@@ -47,7 +47,7 @@ class NationalityFixtures extends Fixture
             $nationality = new Nationality();
             $nationality->setName($nationalities[$i]);
             $manager->persist($nationality);
-            $this->addReference('nationality_' . $i, $nationality); // "expose" l'objet à l'extérieur de la classe pour les liaisons avec Movie
+            $this->addReference('nationality_' . $i, $nationality);
         }
 
         $manager->flush();

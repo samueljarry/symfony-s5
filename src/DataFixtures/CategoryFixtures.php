@@ -16,7 +16,7 @@ class CategoryFixtures extends Fixture
             $category = new Category();
             $category->setName('Category ' . $i);
             $manager->persist($category);
-            $this->addReference('category_' . $i, $category); // "expose" l'objet à l'extérieur de la classe pour les liaisons avec Movie
+            $this->addReference('category_' . $i, $category);
         }
 
         $manager->flush();
