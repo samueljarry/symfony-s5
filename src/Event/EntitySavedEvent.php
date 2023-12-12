@@ -3,7 +3,9 @@
 namespace App\Event;
 
 use Symfony\Contracts\EventDispatcher\Event;
-use App\Entity\YourEntity; // Remplacez YourEntity par le nom de votre entité
+use App\Entity\YourEntity;
+
+// Remplacez YourEntity par le nom de votre entité
 
 class EntitySavedEvent extends Event
 {

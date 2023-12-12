@@ -18,14 +18,16 @@ class ProductController extends AbstractController
     }
 
     #[Route('/products', name: 'app_products')]
-    public function listProducts(): Response {
+    public function listProducts(): Response
+    {
         return $this->render('product/products.html.twig', [
             'controller_name' => 'ProductController',
         ]);
     }
 
     #[Route('/products/{id}')]
-    public function viewProduct(int $id, Sluggify $slugger): Response {
+    public function viewProduct(int $id, Sluggify $slugger): Response
+    {
         $slug = $slugger->generate('ééééé');
         return $this->render('product/product.html.twig', [
             'controller_name' => 'ProductController',
