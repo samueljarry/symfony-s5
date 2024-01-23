@@ -16,6 +16,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     normalizationContext: ['groups' => ['actor:read']],
 )]
+#[ApiFilter(SearchFilter::class, properties: [
+    'id' => 'exact',
+    'firstName' => 'partial',
+    'lastName' => 'partial',
+    'nationality' => 'partial',
+])]
 class Actor
 {
     #[ORM\Id]

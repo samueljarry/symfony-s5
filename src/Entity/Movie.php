@@ -18,8 +18,8 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 #[ApiResource(
     normalizationContext: ['groups' => ['movie:read']],
 )]
-#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])]
 #[ApiFilter(BooleanFilter::class, properties: ['online'])]
+#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'title' => 'partial'])]
 class Movie
 {
     #[ORM\Id]
@@ -39,6 +39,15 @@ class Movie
 
     #[ORM\Column(length: 70)]
     #[Groups(['movie:read', 'actor:read', 'category:read'])]
+    /**
+     * @Assert\NotBlank(message="Le titre ne doit pas être vide.")
+     * @Assert\Length(
+     *      min = 3,
+     *      max = 50,
+     *      minMessage = "Le titre doit avoir au moins {{ limit }} caractères.",
+     *      maxMessage = "Le titre doit avoir moins de {{ limit }} caractères."
+     * )
+     */
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
