@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ActorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -16,12 +17,18 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     normalizationContext: ['groups' => ['actor:read']],
 )]
+#[ApiFilter(SearchFilter::class, properties: [
+    'id' => 'exact',
+    'firstName' => 'partial',
+    'lastName' => 'partial',
+    'nationality' => 'partial',
+])]
 class Actor
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['actor:read'])]
+    #[Groups(['actor:read', 'movie:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 70)]
@@ -40,8 +47,13 @@ class Actor
 
     #[ORM\ManyToOne(targetEntity: Nationality::class, inversedBy: 'actors')]
     #[Groups(['actor:read'])]
+    #[Assert\NotBlank(message: 'La nationalité ne doit pas être vide')]
     private ?Nationality $nationality = null;
 
+    #[ORM\Column(type: Types::ARRAY)]
+    #[Assert\Choice(['Oscars', 'Grammies', 'Golden Globe', 'César', 'Aucun'])]
+    #[Assert\Type(type: 'string')]
+    private array $rewards = [];
     public function __construct()
     {
         $this->movies = new ArrayCollection();
@@ -111,6 +123,18 @@ class Actor
     public function setNationality(?Nationality $nationality): static
     {
         $this->nationality = $nationality;
+
+        return $this;
+    }
+
+    public function getRewards(): array
+    {
+        return $this->rewards;
+    }
+
+    public function setRewards(array $rewards): static
+    {
+        $this->rewards = $rewards;
 
         return $this;
     }
