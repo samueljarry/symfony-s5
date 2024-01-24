@@ -39,32 +39,53 @@ class Movie
 
     #[ORM\Column(length: 70)]
     #[Groups(['movie:read', 'actor:read', 'category:read'])]
-    /**
-     * @Assert\NotBlank(message="Le titre ne doit pas être vide.")
-     * @Assert\Length(
-     *      min = 3,
-     *      max = 50,
-     *      minMessage = "Le titre doit avoir au moins {{ limit }} caractères.",
-     *      maxMessage = "Le titre doit avoir moins de {{ limit }} caractères."
-     * )
-     */
+    #[Assert\NotBlank(message: 'Le titre ne doit pas être vide.')]
+    #[Assert\Length(
+        min: 3,
+        max: 50,
+        minMessage: "Le titre doit avoir au moins {{ limit }} caractères.",
+        maxMessage: "Le titre doit avoir moins de {{ limit }} caractères.",
+    )]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['movie:read', 'actor:read'])]
+    #[Assert\NotBlank(message: 'La description ne doit pas être vide.')]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['movie:read', 'actor:read'])]
+    #[Assert\DateTime()]
     private ?\DateTimeInterface $releaseDate = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     #[Groups(['movie:read', 'actor:read'])]
+    #[Assert\Type(type: "integer")]
     private ?int $duration = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['movie:read', 'actor:read'])]
     private ?bool $online = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $note = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Assert\Type(type: "integer")]
+    private ?int $entries = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Assert\Type(type: "integer")]
+    private ?int $budget = null;
+
+    #[ORM\Column(length: 255)]
+    #[Assert\Type(type: "string")]
+    #[Assert\NotBlank(message: 'Le réalisateur ne doit pas être vide.')]
+    private ?string $director = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Type(type: "integer")]
+    private ?string $website = null;
 
     public function __construct()
     {
@@ -168,6 +189,66 @@ class Movie
     public function setOnline(?bool $online): static
     {
         $this->online = $online;
+
+        return $this;
+    }
+
+    public function getNote(): ?float
+    {
+        return $this->note;
+    }
+
+    public function setNote(float $note): static
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    public function getEntries(): ?int
+    {
+        return $this->entries;
+    }
+
+    public function setEntries(int $entries): static
+    {
+        $this->entries = $entries;
+
+        return $this;
+    }
+
+    public function getBudget(): ?int
+    {
+        return $this->budget;
+    }
+
+    public function setBudget(?int $budget): static
+    {
+        $this->budget = $budget;
+
+        return $this;
+    }
+
+    public function getDirector(): ?string
+    {
+        return $this->director;
+    }
+
+    public function setDirector(string $director): static
+    {
+        $this->director = $director;
+
+        return $this;
+    }
+
+    public function getWebsite(): ?string
+    {
+        return $this->website;
+    }
+
+    public function setWebsite(?string $website): static
+    {
+        $this->website = $website;
 
         return $this;
     }
