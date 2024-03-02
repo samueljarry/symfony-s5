@@ -28,7 +28,7 @@ class AppFixtures extends Fixture
     }
     public function load(ObjectManager $manager): void
     {
-        $faker = \Faker\Factory::create();
+        $faker = Faker\Factory::create();
         $this->loadNationalities($manager, $faker);
         $this->loadCategories($manager, $faker);
         $this->loadActorFixtures($manager, $faker);
@@ -77,7 +77,7 @@ class AppFixtures extends Fixture
     private function loadActorFixtures(ObjectManager $manager, Faker\Generator $faker): void
     {
         $faker->addProvider(new Person($faker));
-        $actors = $faker->actors($gender = null, $count = 190, $duplicates = false);
+        $actors = $faker->actors($gender = null, $count = 70, $duplicates = false);
 
         foreach ($actors as $item) {
             $fullName = $item;
@@ -89,6 +89,7 @@ class AppFixtures extends Fixture
             $actor = new Actor();
             $actor->setFirstName($firstName);
             $actor->setLastName($lastName);
+            $actor->setFullName($firstName.' '.$lastName);
             $actor->setRewards([$this->rewards[rand(0, 4)]]);
             $actor->setNationality($this->nationalities[0]);
 
@@ -107,7 +108,7 @@ class AppFixtures extends Fixture
             shuffle($this->categories);
 
             $movie->setTitle($item);
-            $movie->setReleaseDate($faker->dateTimeThisCentury());
+            $movie->setReleaseDate($faker->dateTimeThisCentury()->format('Y-m-d H:i:s'));
             $movie->setDuration(rand(60, 180));
             $movie->setNote(rand(0, 10));
             $movie->setEntries(rand(1000, 4000000));

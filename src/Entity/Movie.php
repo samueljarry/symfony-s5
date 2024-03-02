@@ -13,6 +13,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use ApiPlatform\Metadata\ApiProperty;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 #[ApiResource(
@@ -27,6 +30,11 @@ class Movie
     #[ORM\Column]
     #[Groups(['movie:read', 'actor:read', 'category:read'])]
     private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: MediaObject::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[ApiProperty(types: ['https://schema.org/image'])]
+    public ?MediaObject $image = null;
 
     #[ORM\ManyToOne(inversedBy: 'movies')]
     #[Groups(['movie:read'])]
@@ -53,10 +61,10 @@ class Movie
     #[Assert\NotBlank(message: 'La description ne doit pas être vide.')]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['movie:read', 'actor:read'])]
-    #[Assert\DateTime()]
-    private ?\DateTimeInterface $releaseDate = null;
+    #[Assert\Type(type: "string")]
+    private ?string $releaseDate = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['movie:read', 'actor:read'])]
@@ -68,23 +76,28 @@ class Movie
     private ?bool $online = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['movie:read'])]
     private ?float $note = null;
 
     #[ORM\Column(nullable: true)]
     #[Assert\Type(type: "integer")]
+    #[Groups(['movie:read'])]
     private ?int $entries = null;
 
     #[ORM\Column(nullable: true)]
     #[Assert\Type(type: "integer")]
+    #[Groups(['movie:read'])]
     private ?int $budget = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\Type(type: "string")]
     #[Assert\NotBlank(message: 'Le réalisateur ne doit pas être vide.')]
+    #[Groups(['movie:read'])]
     private ?string $director = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Type(type: "integer")]
+    #[Assert\Type(type: "string")]
+    #[Groups(['movie:read'])]
     private ?string $website = null;
 
     public function __construct()
@@ -157,12 +170,12 @@ class Movie
         return $this;
     }
 
-    public function getReleaseDate(): ?\DateTimeInterface
+    public function getReleaseDate(): ?string
     {
         return $this->releaseDate;
     }
 
-    public function setReleaseDate(\DateTimeInterface $releaseDate): static
+    public function setReleaseDate(string $releaseDate): static
     {
         $this->releaseDate = $releaseDate;
 

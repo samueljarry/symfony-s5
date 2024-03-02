@@ -19,9 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ApiFilter(SearchFilter::class, properties: [
     'id' => 'exact',
-    'firstName' => 'partial',
-    'lastName' => 'partial',
-    'nationality' => 'partial',
+    'fullName' => 'partial',
 ])]
 class Actor
 {
@@ -34,12 +32,16 @@ class Actor
     #[ORM\Column(length: 70)]
     #[Groups(['movie:read', 'actor:read'])]
     #[Assert\NotBlank(message: 'Vous devez spécifier un prénom.')]
-    #[ApiFilter(SearchFilter::class, strategy:'partial')]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 70)]
     #[Groups(['movie:read', 'actor:read'])]
     private ?string $lastName = null;
+
+    #[ORM\Column(length: 70)]
+    #[Groups(['movie:read', 'actor:read'])]
+    #[ApiFilter(SearchFilter::class, strategy:'partial')]
+    private ?string $fullName = null;
 
     #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actor')]
     #[Groups(['actor:read'])]
@@ -51,8 +53,8 @@ class Actor
     private ?Nationality $nationality = null;
 
     #[ORM\Column(type: Types::ARRAY)]
-    #[Assert\Choice(['Oscars', 'Grammies', 'Golden Globe', 'César', 'Aucun'])]
-    #[Assert\Type(type: 'string')]
+    //#[Assert\Choice(['Oscars', 'Grammies', 'Golden Globe', 'César', 'Aucun'])]
+    #[Assert\Type(type: 'array')]
     private array $rewards = [];
     public function __construct()
     {
@@ -84,6 +86,18 @@ class Actor
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getFullName(): ?string
+    {
+        return $this->fullName;
+    }
+
+    public function setFullName(string $fullName): static
+    {
+        $this->fullName = $fullName;
 
         return $this;
     }
