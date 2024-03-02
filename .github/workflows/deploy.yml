@@ -63,9 +63,7 @@ jobs:
           PORT: ${{ secrets.PORT }}
           KEY: ${{ secrets.SSHKEY }}
           script: |
-            cd /var/www/site/ 
-            git clone git@github.com:samueljarry/symfony-s5.git
-            cd symfony-s5
-            git pull
+            cd /var/www/site/symfony-s5 
+            git pull origin main
             composer install
             php bin/console c:c
