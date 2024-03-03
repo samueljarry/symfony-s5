@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use App\Entity\MediaObject;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,7 +14,7 @@ use Symfony\Component\Filesystem\Filesystem;
 #[AsController]
 final class CreateMediaObjectActionController extends AbstractController
 {
-    public function __invoke(Request $request, EntityManagerInterface $em): MediaObject
+    public function __invoke(Request $request, EntityManagerInterface $em, ParameterBagInterface $params): MediaObject
     {
         $uploadedFile = $request->files->get('file');
         if (!$uploadedFile) {
@@ -21,6 +22,7 @@ final class CreateMediaObjectActionController extends AbstractController
         }
 
         $mediaObject = new MediaObject();
+        $projectDir = $params->get('base_url');
 
         try {
             $filesystem = new Filesystem();
@@ -32,7 +34,7 @@ final class CreateMediaObjectActionController extends AbstractController
         }
 
         $mediaObject->file = $uploadedFile;
-        $mediaObject->filePath = $newFilename;
+        $mediaObject->filePath = $projectDir.'public/uploads/'.$newFilename;
 
         $em->persist($mediaObject);
         $em->flush();
