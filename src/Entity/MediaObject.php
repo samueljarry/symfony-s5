@@ -70,28 +70,4 @@ class MediaObject
     {
         return $this->id;
     }
-
-    public function setFile(?File $file): static
-    {
-        $this->file = $file;
-
-        return $this;
-    }
-
-    public function getFile(): ?File
-    {
-        return $this->file;
-    }
-
-    public function setFilePath(?string $filePath): static
-    {
-        $this->filePath = $filePath;
-
-        return $this;
-    }
-
-    public function getFilePath(): ?string
-    {
-        return $this->filePath;
-    }
 }
