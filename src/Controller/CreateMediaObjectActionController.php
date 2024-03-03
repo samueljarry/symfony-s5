@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Filesystem\Filesystem;
 
 #[AsController]
 final class CreateMediaObjectActionController extends AbstractController
@@ -22,11 +23,10 @@ final class CreateMediaObjectActionController extends AbstractController
         $mediaObject = new MediaObject();
 
         try {
+            $filesystem = new Filesystem();
             $newFilename = uniqid().'.'.$uploadedFile->guessExtension();
-            $uploadedFile->move(
-                $this->getParameter('kernel.project_dir').'/public/uploads',
-                $newFilename
-            );
+            $destination = $this->getParameter('kernel.project_dir').'/public/uploads/'.$newFilename;
+            $filesystem->copy($uploadedFile, $destination);
         } catch (FileException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
