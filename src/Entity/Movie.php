@@ -34,6 +34,7 @@ class Movie
     #[ORM\ManyToOne(targetEntity: MediaObject::class)]
     #[ORM\JoinColumn(nullable: true)]
     #[ApiProperty(types: ['https://schema.org/image'])]
+    #[Groups(['movie:read', 'actor:read', 'category:read'])]
     public ?MediaObject $image = null;
 
     #[ORM\ManyToOne(inversedBy: 'movies')]
@@ -262,6 +263,18 @@ class Movie
     public function setWebsite(?string $website): static
     {
         $this->website = $website;
+
+        return $this;
+    }
+
+    public function getImage(): ?MediaObject
+    {
+        return $this->image;
+    }
+
+    public function setImage(?MediaObject $image): static
+    {
+        $this->image = $image;
 
         return $this;
     }

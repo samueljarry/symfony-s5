@@ -2,13 +2,16 @@
 
 namespace App\DataFixtures;
 
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use App\Entity\Actor;
+use App\Entity\MediaObject;
 use App\Entity\Category;
 use App\Entity\Movie;
 use App\Entity\Nationality;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\HttpFoundation\File\File;
 use Faker;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Xylis\FakerCinema\Provider\Person;
@@ -23,8 +26,12 @@ class AppFixtures extends Fixture
     private array $categories = [];
     /** @var Actor[] $actors */
     private array $actors = [];
-    public function __construct(protected UserPasswordHasherInterface $passwordHasherInterface)
-    {
+    private ParameterBagInterface $params;
+    public function __construct(
+        protected UserPasswordHasherInterface $passwordHasherInterface,
+        ParameterBagInterface $params
+    ) {
+        $this->params = $params;
     }
     public function load(ObjectManager $manager): void
     {
@@ -102,8 +109,10 @@ class AppFixtures extends Fixture
     private function loadMovies(ObjectManager $manager, Faker\Generator $faker): void
     {
         $movies = $faker->movies(100);
+        $projectDir = $this->params->get('base_url');
 
-        foreach ($movies as $item) {
+        foreach ($movies as $i => $item) {
+            $index = $i+1;
             $movie = new Movie();
             shuffle($this->categories);
 
@@ -115,6 +124,13 @@ class AppFixtures extends Fixture
             $movie->setDirector($faker->director());
             $movie->setDescription($faker->overview());
             $movie->setCategory($this->categories[0]);
+
+            $image = new MediaObject();
+            $imagePath = "public/default-movies/$index.webp";
+            $image->setFilePath($projectDir.$imagePath);
+            $image->setFile(new File($imagePath));
+            $manager->persist($image);
+            $movie->setImage($image);
 
             shuffle($this->actors);
             $createdActorsSliced = array_slice($this->actors, 0, 4);
