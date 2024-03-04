@@ -27,14 +27,14 @@ final class CreateMediaObjectActionController extends AbstractController
         try {
             $filesystem = new Filesystem();
             $newFilename = uniqid().'.'.$uploadedFile->guessExtension();
-            $destination = $this->getParameter('kernel.project_dir').'/public/uploads/'.$newFilename;
+            $destination = $this->getParameter('kernel.project_dir').'/uploads/'.$newFilename;
             $filesystem->copy($uploadedFile, $destination);
         } catch (FileException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
 
         $mediaObject->file = $uploadedFile;
-        $mediaObject->filePath = $projectDir.'public/uploads/'.$newFilename;
+        $mediaObject->filePath = $projectDir.'/uploads/'.$newFilename;
 
         $em->persist($mediaObject);
         $em->flush();
